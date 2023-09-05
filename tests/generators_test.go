@@ -14,7 +14,7 @@ import (
 func TestGenerateRandomString(t *testing.T) {
 	fmt.Println("RANDOM STRINGS GENERATION:")
 	for i := 0; i < 10; i++ {
-		fmt.Println(gen.RandomString(uint(rand.Int31n(5))+1, "qazwsxedcrfvtgbyhnujmik,ol.p;"))
+		fmt.Println(gen.RandomString(int(rand.Int31n(6)+1), gen.ENGLET))
 	}
 }
 
@@ -62,4 +62,17 @@ func TestRandomItems(t *testing.T) {
 	items := entities.RandomItems(gen.RandomString(3, gen.ENGLET), 10)
 	data, _ := json.Marshal(items)
 	fmt.Println(string(data))
+}
+
+func TestRandomOrder(t *testing.T) {
+	fmt.Println("RANDOM ORDER GENERATION")
+	order := entities.RandomOrder()
+	data, _ := json.Marshal(order)
+	fmt.Println(string(data))
+}
+
+func TestDBString(t *testing.T) {
+	fmt.Println("DBSTRING CONVERSION:")
+	order := entities.RandomOrder()
+	fmt.Println(order.DBString())
 }

@@ -15,7 +15,7 @@ const (
 )
 
 func GenerateQueryBody() (string, error) {
-	var order entities.Order = entities.RandomOrder()
+	var order = entities.RandomOrder()
 	result, err := json.Marshal(order)
 	return string(result), err
 }

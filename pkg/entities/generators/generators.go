@@ -15,7 +15,7 @@ func RandomString(length int, alphabet string) string {
 	selectSet := []rune(alphabet)
 	var result []rune
 
-	var i int = 0
+	var i = 0
 	for ; i < length; i++ {
 		result = append(result, selectSet[rand.Int31n(int32(len(alphabet)))])
 	}
@@ -43,10 +43,11 @@ func randomDate() time.Time {
 }
 
 func RandomDate() string {
-	return randomDate().String()
+	date := randomDate()
+	return date.Format("2006-01-02T15:04:05Z")
 }
 
-var locales = []string{"en", "rus"}
+var locales = []string{"en", "ru"}
 
 func RandomLocale() string {
 	return locales[rand.Int31n(int32(len(locales)))]

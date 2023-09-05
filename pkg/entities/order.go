@@ -1,6 +1,8 @@
 package entities
 
 import (
+	"encoding/json"
+	"fmt"
 	gen "github.com/bersen66/wb_task0/pkg/entities/generators"
 	"github.com/google/uuid"
 	"math/rand"
@@ -37,9 +39,17 @@ func RandomOrder() Order {
 		CustomerId:      gen.RandomString(5, gen.ENGLET),
 		DeliveryService: gen.RandomString(5, gen.ENGLET),
 		ShardKey:        gen.RandomString(1, gen.DIGITS),
-		SmId:            rand.Uint32(),
+		SmId:            rand.Uint32() % 100,
 		DateCreated:     gen.RandomDate(),
 		OofShard:        gen.RandomString(3, gen.DIGITS),
 	}
 	return result
+}
+
+func (o *Order) DBString() string {
+	delivery, _ := json.Marshal(o.Delivery_)
+	payment, _ := json.Marshal(o.Payment_)
+	items, _ := json.Marshal(o.Items)
+	return fmt.Sprintf("'%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', '%v', %v, %v, '%v', %v",
+		o.Uid, o.TrackNumber, o.Entry, string(delivery), string(payment), string(items), o.Locale, o.InternalSign, o.CustomerId, o.DeliveryService, o.ShardKey, o.SmId, o.DateCreated, o.OofShard)
 }
