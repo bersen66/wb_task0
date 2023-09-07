@@ -12,8 +12,10 @@ import (
 )
 
 const (
-	ClusterID = "test-cluster"
-	ClientID  = "subscriber"
+	ClusterID     = "test-cluster"
+	ClientID      = "subscriber"
+	CacheCapacity = 1000
+	DumpFile      = "dump.txt"
 )
 
 func PollOsSignals() {
@@ -35,13 +37,20 @@ func main() {
 		DBName:   "wbs0",
 		SSLMode:  "disable",
 	})
+	cache := repository.NewStorageCache(CacheCapacity, storage)
+	err := cache.Load(DumpFile)
+	defer cache.Dump(DumpFile)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	handlers := handler.NewHandler(storage)
+	handlers := handler.NewHandler(cache)
 
 	sb, err := natss.NewSubscriber(natss.SubscriberConfig{
 		ClusterID: ClusterID,
 		ClientID:  ClientID,
 	})
+
 	if err != nil {
 		log.Fatal(err)
 	}

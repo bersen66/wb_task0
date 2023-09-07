@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/bersen66/wb_task0/pkg/entities"
 	"github.com/bersen66/wb_task0/pkg/repository"
+	"github.com/google/go-cmp/cmp"
 	"github.com/nats-io/stan.go"
 	"log"
 )
@@ -22,10 +23,19 @@ func NewHandler(storage repository.OrdersStorage) *Handler {
 
 func (h *Handler) InsertOrder(m *stan.Msg) {
 	var order = entities.Order{}
-	json.Unmarshal(m.Data, &order)
 
-	_, err := h.storage.Insert(&order)
+	err := json.Unmarshal(m.Data, &order)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	err = h.storage.InsertOrder(&order)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	data, err := h.storage.GetOrder(order.Uid)
+	if !cmp.Equal(order.Uid, data.Uid) {
+		log.Fatal("Not eq")
 	}
 }

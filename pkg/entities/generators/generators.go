@@ -33,7 +33,6 @@ func RandomCurrency() string {
 	return currencies[rand.Int31n(int32(len(currencies)))]
 }
 
-// TODO: Carrying for timezones and ISO-8601
 func randomDate() time.Time {
 	min := time.Date(1970, 1, 0, 0, 0, 0, 0, time.UTC).Unix()
 	max := time.Date(2070, 1, 0, 0, 0, 0, 0, time.UTC).Unix()
