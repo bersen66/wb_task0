@@ -6,6 +6,7 @@ import (
 	"github.com/bersen66/wb_task0/pkg/repository"
 	"github.com/bersen66/wb_task0/pkg/transport/natss"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -24,6 +25,18 @@ func PollOsSignals() {
 	acceptedSignal := <-signalChannel
 	if acceptedSignal == syscall.SIGINT {
 		fmt.Println("Bye!")
+	}
+}
+
+func RunHttp(handlers *handler.Handler) {
+	fileServer := http.FileServer(http.Dir("./website"))
+	http.Handle("/", fileServer)
+	http.HandleFunc("/aboba", handlers.PrintHello)
+
+	fmt.Printf("Starting server at port 8080\n")
+
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		log.Fatal(err)
 	}
 }
 
@@ -58,5 +71,6 @@ func main() {
 	sb.MustSubscribe("orders", handlers.InsertOrder)
 	defer sb.Shutdown()
 
+	go RunHttp(handlers)
 	PollOsSignals()
 }
